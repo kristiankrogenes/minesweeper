@@ -22,9 +22,10 @@ public class Board {
 		
 		for (int x=-1; x<2; x++) {
 			for (int y=-1; y<2; y++) {
+				
 				int nX = posX + x;
 				int nY = posY + y;
-				System.out.println("" + nX +" " + nY);
+				
 				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0)) {
 					if (this.squares.get((10*nY) + nX).getIsBomb()) {
 						bombCount++;
@@ -32,6 +33,7 @@ public class Board {
 				}
 			}
 		}
+		
 		return bombCount;
 	}
 }

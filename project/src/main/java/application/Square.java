@@ -25,4 +25,8 @@ public class Square {
 	public boolean getIsEditable() {
 		return this.isEditable;
 	}
+	
+	public void setIsEditable(boolean isEditable) {
+		this.isEditable = isEditable;
+	}
 }

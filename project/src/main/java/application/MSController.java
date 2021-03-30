@@ -1,7 +1,5 @@
 package application;
 
-import java.util.ArrayList;
-
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,7 +31,7 @@ public class MSController {
 				button.setMaxWidth(50.0);
 				button.setMaxHeight(50.0);
 				button.setStyle("-fx-font-size:12; -fx-background-color: #AAAAAA");
-				button.setText("" + board.getSquares().get(id).getIsBomb());
+				button.setText("");
 				button.setOnMouseClicked(e -> handleClick(e));
 				button.setId(Integer.toString(id));
 				id++;
@@ -49,20 +47,35 @@ public class MSController {
 		int posX = GridPane.getColumnIndex(source);
 		int posY = GridPane.getRowIndex(source);
 		checkSquare(squareId, posX, posY);
-		
 	}
 	
 	private void checkSquare(int id, int posX, int posY) {
 		String text;
 		
-		if (board.getSquares().get(id).getIsBomb()) {
-			text = "X";
-		} else {
-			text = Integer.toString(board.numberOfBombsNearby(posX, posY));
+		if (board.getSquares().get(id).getIsEditable()) {
+			if (board.getSquares().get(id).getIsBomb()) {
+				text = "X";
+				changeSquare(id, posX, posY, text);
+				disableButton(id);
+				board.getSquares().get(id).setIsEditable(false);
+			} else {
+				
+				int numOfBombs = board.numberOfBombsNearby(posX, posY);
+				
+				if (numOfBombs == 0) {
+					text = "";
+					changeSquare(id, posX, posY, text);
+					disableButton(id);
+					board.getSquares().get(id).setIsEditable(false);
+					openSquare(id, posX, posY);
+				} else {
+					text = Integer.toString(numOfBombs);
+					changeSquare(id, posX, posY, text);
+					board.getSquares().get(id).setIsEditable(false);
+					disableButton(id);
+				}
+			}
 		}
-		
-		changeSquare(id, posX, posY, text);
-		disableButton(id);
 	}
 	
 	private void changeSquare(int id,int posX, int posY, String text) {
@@ -80,6 +93,22 @@ public class MSController {
 			if (node.getId() != null) {
 				if (Integer.parseInt(node.getId()) == id) {
 					node.setDisable(true);
+				}
+			}
+		}
+	}
+	
+	private void openSquare(int id, int posX, int posY) {
+		for (int x=-1; x<2; x++) {
+			for (int y=-1; y<2; y++) {
+				
+				int nX = posX + x;
+				int nY = posY + y;
+				
+				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0) && !(posX == nX && posY == nY)) {
+					if (!(board.getSquares().get((10*nY) + nX).getIsBomb()) && (board.numberOfBombsNearby(nX, nY) == 0)) {
+						checkSquare((10*nY) + nX, nX, nY);
+					}
 				}
 			}
 		}
