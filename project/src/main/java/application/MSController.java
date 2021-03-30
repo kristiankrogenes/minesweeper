@@ -105,10 +105,8 @@ public class MSController {
 				int nX = posX + x;
 				int nY = posY + y;
 				
-				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0) && !(posX == nX && posY == nY)) {
-					if (!(board.getSquares().get((10*nY) + nX).getIsBomb()) && (board.numberOfBombsNearby(nX, nY) == 0)) {
-						checkSquare((10*nY) + nX, nX, nY);
-					}
+				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0) && !(posX == nX && posY == nY) && !(board.getSquares().get((10*nY) + nX).getIsBomb())) {
+					checkSquare((10*nY) + nX, nX, nY);
 				}
 			}
 		}
