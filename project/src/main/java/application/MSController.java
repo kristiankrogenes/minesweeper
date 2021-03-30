@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
@@ -46,10 +47,22 @@ public class MSController {
 		int squareId = Integer.parseInt(source.getId());
 		int posX = GridPane.getColumnIndex(source);
 		int posY = GridPane.getRowIndex(source);
-		checkSquare(squareId, posX, posY);
+		
+		if (e.getButton() == MouseButton.PRIMARY) {
+			checkSquare(squareId, posX, posY);
+		}
+		if (e.getButton() == MouseButton.SECONDARY) {
+			if (board.getSquares().get(squareId).getIsEditable()) {
+				((Button) source).setText("?");
+			} else {
+				((Button) source).setText("");
+			}
+			board.getSquares().get(squareId).setIsEditable();
+		}
 	}
 	
 	private void checkSquare(int id, int posX, int posY) {
+		
 		String text;
 		
 		if (board.getSquares().get(id).getIsEditable()) {
@@ -57,7 +70,7 @@ public class MSController {
 				text = "X";
 				changeSquare(id, posX, posY, text);
 				disableButton(id);
-				board.getSquares().get(id).setIsEditable(false);
+				board.getSquares().get(id).setIsEditable();
 			} else {
 				
 				int numOfBombs = board.numberOfBombsNearby(posX, posY);
@@ -66,12 +79,12 @@ public class MSController {
 					text = "";
 					changeSquare(id, posX, posY, text);
 					disableButton(id);
-					board.getSquares().get(id).setIsEditable(false);
+					board.getSquares().get(id).setIsEditable();
 					openSquare(id, posX, posY);
 				} else {
 					text = Integer.toString(numOfBombs);
 					changeSquare(id, posX, posY, text);
-					board.getSquares().get(id).setIsEditable(false);
+					board.getSquares().get(id).setIsEditable();
 					disableButton(id);
 				}
 			}
