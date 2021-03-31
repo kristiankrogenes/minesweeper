@@ -13,14 +13,18 @@ import javafx.scene.text.TextAlignment;
 public class MSController {
 	
 	@FXML GridPane grid;
+	@FXML Button restartButton;
 	@FXML Label statusField;
+	@FXML Label bombCountField;
 	
 	private Board board;
+	private int numberOfRemainingBombs;
 	
 	@FXML
 	void initialize() {
 		board = new Board();
 		addButtons();
+		updateRemainingBombs();
 	}
 	
 	@FXML
@@ -40,12 +44,13 @@ public class MSController {
 				((Button) source).setText("");
 			}
 			board.getSquares().get(squareId).setIsEditable();
+			board.getSquares().get(squareId).setIsFlagged();
+			updateRemainingBombs();
 		}
 	}
 	
 	@FXML 
 	void handleRestartButton() {
-		System.out.println("OK");
 		restartGame();
 	}
 	
@@ -53,7 +58,7 @@ public class MSController {
 		board = new Board();
 		grid.getChildren().clear();
 		addButtons();
-		// System.out.println(board.getSquares().get(0).getIsBomb());
+		updateRemainingBombs();
 	}
 	
 	private void addButtons() {
@@ -146,12 +151,21 @@ public class MSController {
 			int id = board.getSquares().indexOf(sq);
 			int posX = id%10;
 			int posY = id/10;
-			System.out.println(posX);
 			if (sq.getIsBomb()) {
 				changeSquare(id, posX, posY, "X");
 			}
 			disableButton(id);
 		});
+	}
+	
+	private void updateRemainingBombs() {
+		numberOfRemainingBombs = board.getTotalBombs();
+		board.getSquares().stream().forEach(sq -> {
+			if (sq.getIsFlagged()) {
+				numberOfRemainingBombs--;
+			}
+		});
+		bombCountField.setText("REMAINING BOMBS     " + Integer.toString(numberOfRemainingBombs));
 	}
 	
 	

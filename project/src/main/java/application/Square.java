@@ -6,6 +6,7 @@ public class Square {
 	
 	private boolean isBomb;
 	private boolean isEditable = true;
+	private boolean isFlagged = false;
 	
 	public Square(int difficulty) {
 		
@@ -26,7 +27,15 @@ public class Square {
 		return this.isEditable;
 	}
 	
+	public boolean getIsFlagged() {
+		return this.isFlagged;
+	}
+	
 	public void setIsEditable() {
-		this.isEditable = !isEditable;
+		this.isEditable = !this.isEditable;
+	}
+	
+	public void setIsFlagged() {
+		this.isFlagged = !this.isFlagged;
 	}
 }

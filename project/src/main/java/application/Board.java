@@ -5,15 +5,25 @@ import java.util.ArrayList;
 public class Board {
 	
 	private ArrayList<Square> squares = new ArrayList<Square>();
+	private int totalBombs;
 	
 	public Board() {
 		for (int i=0; i<100; i++) {
 			squares.add(new Square(20));
 		}
+		squares.stream().forEach(sq -> {
+			if (sq.getIsBomb()) {
+				this.totalBombs++;
+			}
+		});
 	}
 	
 	public ArrayList<Square> getSquares() {
 		return this.squares;
+	}
+	
+	public int getTotalBombs() {
+		return this.totalBombs;
 	}
 	
 	public int numberOfBombsNearby(int posX, int posY) {
