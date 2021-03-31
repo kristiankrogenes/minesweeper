@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="application.MSController">
+<AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MSController">
    <children>
       <GridPane fx:id="grid" layoutX="-5.0" layoutY="-5.0">
         <columnConstraints>
@@ -34,5 +35,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
+      <Button fx:id="restartButton" layoutX="213.0" layoutY="304.0" mnemonicParsing="false" onAction="#handleRestartButton" text="RESTART" textAlignment="CENTER" />
+      <Label fx:id="statusField" layoutX="307.0" layoutY="307.0" minWidth="150.0" textAlignment="CENTER" />
    </children>
 </AnchorPane>

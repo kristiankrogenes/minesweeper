@@ -13,6 +13,7 @@ import javafx.scene.text.TextAlignment;
 public class MSController {
 	
 	@FXML GridPane grid;
+	@FXML Label statusField;
 	
 	private Board board;
 	
@@ -22,27 +23,8 @@ public class MSController {
 		addButtons();
 	}
 	
-	private void addButtons() {
-		
-		int id = 0;
-		
-		for (int i=0; i<10; i++) {
-			for (int j=0; j<10; j++) {
-				Button button = new Button();
-				button.setMaxWidth(50.0);
-				button.setMaxHeight(50.0);
-				button.setStyle("-fx-font-size:12; -fx-background-color: #AAAAAA");
-				button.setText("");
-				button.setOnMouseClicked(e -> handleClick(e));
-				button.setId(Integer.toString(id));
-				id++;
-				grid.add(button, j, i);
-			}
-		}
-	}
-	
 	@FXML
-	void handleClick(MouseEvent e) {
+	public void handleClick(MouseEvent e) {
 		Node source = (Node) e.getSource();
 		int squareId = Integer.parseInt(source.getId());
 		int posX = GridPane.getColumnIndex(source);
@@ -61,16 +43,50 @@ public class MSController {
 		}
 	}
 	
+	@FXML 
+	void handleRestartButton() {
+		System.out.println("OK");
+		restartGame();
+	}
+	
+	private void restartGame() {
+		board = new Board();
+		grid.getChildren().clear();
+		addButtons();
+		// System.out.println(board.getSquares().get(0).getIsBomb());
+	}
+	
+	private void addButtons() {
+		
+		int id = 0;
+		
+		for (int i=0; i<10; i++) {
+			for (int j=0; j<10; j++) {
+				Button button = new Button();
+				button.setMaxWidth(50.0);
+				button.setMaxHeight(50.0);
+				button.setStyle("-fx-font-size:12; -fx-background-color: #D4D4D4");
+				button.setText("");
+				button.setOnMouseClicked(e -> handleClick(e));
+				button.setId(Integer.toString(id));
+				id++;
+				grid.add(button, j, i);
+			}
+		}
+	}
+	
 	private void checkSquare(int id, int posX, int posY) {
 		
 		String text;
 		
 		if (board.getSquares().get(id).getIsEditable()) {
 			if (board.getSquares().get(id).getIsBomb()) {
+				lostGame();
+				/*
 				text = "X";
 				changeSquare(id, posX, posY, text);
 				disableButton(id);
-				board.getSquares().get(id).setIsEditable();
+				board.getSquares().get(id).setIsEditable();*/
 			} else {
 				
 				int numOfBombs = board.numberOfBombsNearby(posX, posY);
@@ -123,6 +139,19 @@ public class MSController {
 				}
 			}
 		}
+	}
+	
+	private void lostGame() {
+		board.getSquares().stream().forEach(sq -> {
+			int id = board.getSquares().indexOf(sq);
+			int posX = id%10;
+			int posY = id/10;
+			System.out.println(posX);
+			if (sq.getIsBomb()) {
+				changeSquare(id, posX, posY, "X");
+			}
+			disableButton(id);
+		});
 	}
 	
 	
