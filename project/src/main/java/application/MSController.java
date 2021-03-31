@@ -12,7 +12,7 @@ import javafx.scene.text.TextAlignment;
 
 public class MSController {
 	
-	@FXML GridPane grid;
+	@FXML GridPane msgrid;
 	@FXML Button restartButton;
 	@FXML Label statusField;
 	@FXML Label bombCountField;
@@ -22,7 +22,7 @@ public class MSController {
 	private boolean isGameWon;
 	
 	@FXML
-	void initialize() {
+	public void initialize() {
 		renderNewGame();
 	}
 	
@@ -48,18 +48,18 @@ public class MSController {
 		}
 		
 		if (isGameWon()) {
-			wonGame();
+			updateGame("YOU WON", "?");
 		}
 	}
 	
 	@FXML 
-	void handleRestartButton() {
+	public void handleRestartButton() {
 		renderNewGame();
 	}
 	
 	private void renderNewGame() {
 		board = new Board();
-		grid.getChildren().clear();
+		msgrid.getChildren().clear();
 		addButtons();
 		updateRemainingBombs();
 		updateStatusField("");
@@ -79,7 +79,7 @@ public class MSController {
 				button.setOnMouseClicked(e -> handleClick(e));
 				button.setId(Integer.toString(id));
 				id++;
-				grid.add(button, j, i);
+				msgrid.add(button, j, i);
 			}
 		}
 	}
@@ -90,12 +90,7 @@ public class MSController {
 		
 		if (board.getSquares().get(id).getIsEditable()) {
 			if (board.getSquares().get(id).getIsBomb()) {
-				lostGame();
-				/*
-				text = "X";
-				changeSquare(id, posX, posY, text);
-				disableButton(id);
-				board.getSquares().get(id).setIsEditable();*/
+				updateGame("YOU LOST", "X");
 			} else {
 				
 				int numOfBombs = board.numberOfBombsNearby(posX, posY);
@@ -123,11 +118,11 @@ public class MSController {
 		label.setTextAlignment(TextAlignment.CENTER);
 		label.setAlignment(Pos.CENTER);
 		label.setText(text);
-		grid.add(label, posX, posY);
+		msgrid.add(label, posX, posY);
 	}
 	
 	private void disableButton(int id) {
-		for (Node node : grid.getChildren()) {
+		for (Node node : msgrid.getChildren()) {
 			if (node.getId() != null) {
 				if (Integer.parseInt(node.getId()) == id) {
 					node.setDisable(true);
@@ -150,34 +145,22 @@ public class MSController {
 		}
 	}
 	
-	private void wonGame() {
+	private void updateGame(String gameStatus, String squareText) {
 		board.getSquares().stream().forEach(sq -> {
 			int id = board.getSquares().indexOf(sq);
 			int posX = id%10;
 			int posY = id/10;
 			if (sq.getIsBomb()) {
-				changeSquare(id, posX, posY, "?");
+				changeSquare(id, posX, posY, squareText);
 			}
 			disableButton(id);
 		});
-		updateStatusField("YOU WON");
+		updateStatusField(gameStatus);
 	}
 	
-	private void lostGame() {
-		board.getSquares().stream().forEach(sq -> {
-			int id = board.getSquares().indexOf(sq);
-			int posX = id%10;
-			int posY = id/10;
-			if (sq.getIsBomb()) {
-				changeSquare(id, posX, posY, "X");
-			}
-			disableButton(id);
-		});
-		updateStatusField("YOU LOST");
-	}
+	
 	
 	private boolean isGameWon() {
-		System.out.println("CHECK");
 		this.isGameWon = true;
 		board.getSquares().stream().forEach(sq -> {
 			if (!((sq.getIsBomb() && sq.getIsFlagged()) || (!sq.getIsBomb() && !sq.getIsEditable()))) {
