@@ -10,16 +10,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 
-public class MSController {
+public class MSController implements FileController {
 	
 	@FXML GridPane msgrid;
 	@FXML Button restartButton;
+	@FXML Button saveButton;
 	@FXML Label statusField;
 	@FXML Label bombCountField;
 	
 	private Board board;
 	private int numberOfRemainingBombs;
 	private boolean isGameWon;
+	private String filename = "msdata.txt";
 	
 	@FXML
 	public void initialize() {
@@ -188,6 +190,13 @@ public class MSController {
 	private void updateStatusField(String text) {
 		statusField.setText(text);
 	}
+	
+	@FXML
+	public void handleSaveButton() {
+		saveToFile(filename, board);
+	}
+	
+	
 	
 	
 	

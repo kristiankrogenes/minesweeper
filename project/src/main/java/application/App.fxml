@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="462.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MSController">
+<AnchorPane prefHeight="505.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MSController">
    <children>
       <GridPane fx:id="msgrid" alignment="CENTER" hgap="5.0" layoutX="16.0" layoutY="14.0" vgap="5.0">
         <columnConstraints>
@@ -38,5 +38,6 @@
       <Button fx:id="restartButton" layoutX="157.0" layoutY="372.0" mnemonicParsing="false" onAction="#handleRestartButton" text="RESTART" textAlignment="CENTER" />
       <Label fx:id="statusField" alignment="CENTER" layoutX="113.0" layoutY="440.0" minWidth="150.0" textAlignment="CENTER" />
       <Label fx:id="bombCountField" layoutX="113.0" layoutY="411.0" minWidth="150.0" textAlignment="CENTER" />
+      <Button fx:id="saveButton" layoutX="166.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleSaveButton" text="SAVE" textAlignment="CENTER" />
    </children>
 </AnchorPane>
