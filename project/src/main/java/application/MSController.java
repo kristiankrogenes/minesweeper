@@ -19,12 +19,11 @@ public class MSController {
 	
 	private Board board;
 	private int numberOfRemainingBombs;
+	private boolean isGameWon;
 	
 	@FXML
 	void initialize() {
-		board = new Board();
-		addButtons();
-		updateRemainingBombs();
+		renderNewGame();
 	}
 	
 	@FXML
@@ -47,18 +46,23 @@ public class MSController {
 			board.getSquares().get(squareId).setIsFlagged();
 			updateRemainingBombs();
 		}
+		
+		if (isGameWon()) {
+			wonGame();
+		}
 	}
 	
 	@FXML 
 	void handleRestartButton() {
-		restartGame();
+		renderNewGame();
 	}
 	
-	private void restartGame() {
+	private void renderNewGame() {
 		board = new Board();
 		grid.getChildren().clear();
 		addButtons();
 		updateRemainingBombs();
+		updateStatusField("");
 	}
 	
 	private void addButtons() {
@@ -146,6 +150,19 @@ public class MSController {
 		}
 	}
 	
+	private void wonGame() {
+		board.getSquares().stream().forEach(sq -> {
+			int id = board.getSquares().indexOf(sq);
+			int posX = id%10;
+			int posY = id/10;
+			if (sq.getIsBomb()) {
+				changeSquare(id, posX, posY, "?");
+			}
+			disableButton(id);
+		});
+		updateStatusField("YOU WON");
+	}
+	
 	private void lostGame() {
 		board.getSquares().stream().forEach(sq -> {
 			int id = board.getSquares().indexOf(sq);
@@ -156,16 +173,37 @@ public class MSController {
 			}
 			disableButton(id);
 		});
+		updateStatusField("YOU LOST");
 	}
 	
-	private void updateRemainingBombs() {
+	private boolean isGameWon() {
+		System.out.println("CHECK");
+		this.isGameWon = true;
+		board.getSquares().stream().forEach(sq -> {
+			if (!((sq.getIsBomb() && sq.getIsFlagged()) || (!sq.getIsBomb() && !sq.getIsEditable()))) {
+				isGameWon = false;
+			}
+		});
+		
+		return isGameWon;
+	}
+	
+	private int checkRemainingBombs() {
 		numberOfRemainingBombs = board.getTotalBombs();
 		board.getSquares().stream().forEach(sq -> {
 			if (sq.getIsFlagged()) {
 				numberOfRemainingBombs--;
 			}
 		});
-		bombCountField.setText("REMAINING BOMBS     " + Integer.toString(numberOfRemainingBombs));
+		return numberOfRemainingBombs;
+	}
+	
+	private void updateRemainingBombs() {
+		bombCountField.setText("REMAINING BOMBS:	" + Integer.toString(checkRemainingBombs()));
+	}
+	
+	private void updateStatusField(String text) {
+		statusField.setText(text);
 	}
 	
 	

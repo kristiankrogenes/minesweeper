@@ -9,7 +9,7 @@ public class Board {
 	
 	public Board() {
 		for (int i=0; i<100; i++) {
-			squares.add(new Square(20));
+			squares.add(new Square(15));
 		}
 		squares.stream().forEach(sq -> {
 			if (sq.getIsBomb()) {
