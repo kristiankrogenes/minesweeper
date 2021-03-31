@@ -15,6 +15,7 @@ public class MSController implements FileController {
 	@FXML GridPane msgrid;
 	@FXML Button restartButton;
 	@FXML Button saveButton;
+	@FXML Button loadButton;
 	@FXML Label statusField;
 	@FXML Label bombCountField;
 	
@@ -25,7 +26,7 @@ public class MSController implements FileController {
 	
 	@FXML
 	public void initialize() {
-		renderNewGame();
+		renderNewGame(false, "");
 	}
 	
 	@FXML
@@ -50,17 +51,21 @@ public class MSController implements FileController {
 		}
 		
 		if (isGameWon()) {
-			updateGame("YOU WON", "?");
+			updateEndGame("YOU WON", "?");
 		}
 	}
 	
 	@FXML 
 	public void handleRestartButton() {
-		renderNewGame();
+		renderNewGame(false, "");
 	}
 	
-	private void renderNewGame() {
-		board = new Board();
+	private void renderNewGame(boolean isLoadGame, String data) {
+		if (isLoadGame) {
+			board = new Board(data);
+		} else {
+			board = new Board();
+		}
 		msgrid.getChildren().clear();
 		addButtons();
 		updateRemainingBombs();
@@ -73,6 +78,7 @@ public class MSController implements FileController {
 		
 		for (int i=0; i<10; i++) {
 			for (int j=0; j<10; j++) {
+				/*
 				Button button = new Button();
 				button.setMaxWidth(50.0);
 				button.setMaxHeight(50.0);
@@ -81,9 +87,22 @@ public class MSController implements FileController {
 				button.setOnMouseClicked(e -> handleClick(e));
 				button.setId(Integer.toString(id));
 				id++;
-				msgrid.add(button, j, i);
+				msgrid.add(button, j, i);*/
+				createButton(id, j, i, "");
+				id++;
 			}
 		}
+	}
+	
+	private void createButton(int id, int posX, int posY, String buttontext) {
+		Button button = new Button();
+		button.setMaxWidth(50.0);
+		button.setMaxHeight(50.0);
+		button.setStyle("-fx-font-size:12; -fx-background-color: #D4D4D4");
+		button.setText(buttontext);
+		button.setOnMouseClicked(e -> handleClick(e));
+		button.setId(Integer.toString(id));
+		msgrid.add(button, posX, posY);
 	}
 	
 	private void checkSquare(int id, int posX, int posY) {
@@ -92,7 +111,7 @@ public class MSController implements FileController {
 		
 		if (board.getSquares().get(id).getIsEditable()) {
 			if (board.getSquares().get(id).getIsBomb()) {
-				updateGame("YOU LOST", "X");
+				updateEndGame("YOU LOST", "X");
 			} else {
 				
 				int numOfBombs = board.numberOfBombsNearby(posX, posY);
@@ -147,7 +166,7 @@ public class MSController implements FileController {
 		}
 	}
 	
-	private void updateGame(String gameStatus, String squareText) {
+	private void updateEndGame(String gameStatus, String squareText) {
 		board.getSquares().stream().forEach(sq -> {
 			int id = board.getSquares().indexOf(sq);
 			int posX = id%10;
@@ -194,6 +213,43 @@ public class MSController implements FileController {
 	@FXML
 	public void handleSaveButton() {
 		saveToFile(filename, board);
+	}
+	
+	@FXML
+	public void handleLoadButton() {
+		renderNewGame(true, loadFile(filename));
+		updateLoadedGame();
+	}
+	
+	private void updateLoadedGame() {
+		msgrid.getChildren().clear();
+		board.getSquares().stream().forEach(sq -> {
+			int id = board.getSquares().indexOf(sq);
+			int posX = id%10;
+			int posY = id/10;
+			if (sq.getIsEditable()) {
+				createButton(id, posX, posY, "");
+			} else {
+				if (sq.getIsFlagged()) {
+					createButton(id, posX, posY, "?");
+				} else {
+					if (sq.getIsBomb()) {
+						createButton(id, posX, posY, "");
+						disableButton(id);
+						changeSquare(id, posX, posY, "X");
+					} else {
+						createButton(id, posX, posY, "");
+						disableButton(id);
+						if (board.numberOfBombsNearby(posX, posY) == 0) {
+							changeSquare(id, posX, posY, "");
+						} else {
+							changeSquare(id, posX, posY, Integer.toString(board.numberOfBombsNearby(posX, posY)));
+						}
+						
+					}
+				}
+			}
+		});
 	}
 	
 	

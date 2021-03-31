@@ -1,7 +1,9 @@
 package application;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
 public interface FileController {
 	
@@ -12,6 +14,7 @@ public interface FileController {
 			PrintWriter writer = new PrintWriter(newfile);
 			
 			board.getSquares().stream().forEach(sq -> {
+				/*
 				int isBomb = 0;
 				int isEditable = 0;
 				int isFlagged = 0;
@@ -24,17 +27,32 @@ public interface FileController {
 				}
 				if (sq.getIsFlagged()) {
 					isFlagged = 1;
-				}
-				String squaredata = isBomb + "" + isEditable + "" + isFlagged +",";
+				}*/
+				String squaredata = sq.getIsBomb() + "-" + sq.getIsEditable() + "-" + sq.getIsFlagged() +",";
 				writer.println(squaredata);
 			});
 			writer.close();
 			
 		} catch(Exception e) {
 			System.out.println("FEIL");
-			
 		}
 		System.out.println("SAVED");
+	}
+	
+	public default String loadFile(String filename) {
+		String fileData = "";
+		
+		try {
+			Scanner filescanner = new Scanner(new FileReader(filename));
+			while (filescanner.hasNext()) {
+				fileData += filescanner.next();
+			}
+			filescanner.close();
+		} catch(Exception e) {
+			fileData = null;
+		}
+		
+		return fileData;
 	}
 
 }

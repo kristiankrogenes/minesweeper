@@ -19,6 +19,12 @@ public class Square {
 		}
 	}
 	
+	public Square(boolean isBomb, boolean isEditable, boolean isFlagged) {
+		this.isBomb = isBomb;
+		this.isEditable = isEditable;
+		this.isFlagged = isFlagged;
+	}
+	
 	public boolean getIsBomb() {
 		return this.isBomb;
 	}
