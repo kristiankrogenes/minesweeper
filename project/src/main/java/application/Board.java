@@ -36,6 +36,14 @@ public class Board {
 		return this.totalBombs;
 	}
 	
+	private void setTotalNumberOfBombs() {
+		squares.stream().forEach(sq -> {
+			if (sq.getIsBomb()) {
+				this.totalBombs++;
+			}
+		});
+	}
+	
 	public int numberOfBombsNearby(int posX, int posY) {
 		
 		int bombCount = 0;
@@ -55,13 +63,5 @@ public class Board {
 		}
 		
 		return bombCount;
-	}
-	
-	private void setTotalNumberOfBombs() {
-		squares.stream().forEach(sq -> {
-			if (sq.getIsBomb()) {
-				this.totalBombs++;
-			}
-		});
 	}
 }
