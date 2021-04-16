@@ -37,6 +37,7 @@ public class MSController implements FileController {
     private boolean isGameWon;
     private String filename = "msdata.txt";
     private String flag = new String(Character.toChars(0x1F6A9));
+    private String bomb = new String(Character.toChars(0x1F4A3));
 
     @FXML
     public void initialize() {
