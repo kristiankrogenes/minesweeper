@@ -21,7 +21,7 @@ public interface FileController {
 				
 				if (sq.getIsBomb()) {
 					isBomb = 1;
-				}
+				} 
 				if (sq.getIsEditable()) {
 					isEditable = 1;
 				}
