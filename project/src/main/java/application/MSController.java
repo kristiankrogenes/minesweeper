@@ -115,7 +115,7 @@ public class MSController implements FileController {
 
 	if (board.getSquares().get(id).getIsEditable()) {
 	    if (board.getSquares().get(id).getIsBomb()) {
-		updateEndGame("YOU LOST", "X");
+		updateEndGame("YOU LOST", bomb);
 	    } else {
 
 		int numOfBombs = board.numberOfBombsNearby(posX, posY);
