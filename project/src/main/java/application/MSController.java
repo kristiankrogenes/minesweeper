@@ -17,7 +17,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-public class MSController implements FileController {
+public class MSController {
 
     @FXML
     GridPane msgrid;
@@ -32,6 +32,7 @@ public class MSController implements FileController {
     @FXML
     Label bombCountField;
 
+    private FileWriter fileWriter = new FileWriter();
     private Board board;
     private int numberOfRemainingBombs;
     private boolean isGameWon;
@@ -235,12 +236,12 @@ public class MSController implements FileController {
 
     @FXML
     public void handleSaveButton() {
-	saveToFile(filename, board);
+	fileWriter.saveToFile(filename, board);
     }
 
     @FXML
     public void handleLoadButton() {
-	renderNewGame(true, loadFile(filename));
+	renderNewGame(true, fileWriter.loadFile(filename));
 	updateLoadedGame();
     }
 
