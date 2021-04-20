@@ -33,8 +33,7 @@ public class MSController {
     Label bombCountField;
 
     private FileWriter fileWriter = new FileWriter();
-    private Board board;
-    private int numberOfRemainingBombs;
+    private Game game;
     private boolean isGameWon;
     private String filename = "msdata.txt";
     private String flag = new String(Character.toChars(0x1F6A9));
@@ -52,9 +51,9 @@ public class MSController {
 
     private void renderNewGame(boolean isLoadGame, String data) {
 	if (isLoadGame) {
-	    board = new Board(data);
+	    Game game = new Game(data);
 	} else {
-	    board = new Board();
+	    game = new Game();
 	}
 	msgrid.getChildren().clear();
 	addButtons();
@@ -75,7 +74,7 @@ public class MSController {
     }
 
     private void updateRemainingBombs() {
-	bombCountField.setText("REMAINING BOMBS:	" + Integer.toString(checkRemainingBombs()));
+	bombCountField.setText("REMAINING BOMBS:	" + Integer.toString(game.checkRemainingBombs()));
     }
 
     private void updateStatusField(String text) {
@@ -115,17 +114,17 @@ public class MSController {
 	    checkSquare(squareId, posX, posY);
 	}
 	if (e.getButton() == MouseButton.SECONDARY) {
-	    if (board.getSquares().get(squareId).getIsEditable()) {
+	    if (game.getBoard().getSquares().get(squareId).getIsEditable()) {
 		((Button) source).setText(flag);
 	    } else {
 		((Button) source).setText("");
 	    }
-	    board.getSquares().get(squareId).setIsEditable();
-	    board.getSquares().get(squareId).setIsFlagged();
+	    game.getBoard().getSquares().get(squareId).setIsEditable();
+	    game.getBoard().getSquares().get(squareId).setIsFlagged();
 	    updateRemainingBombs();
 	}
 
-	if (isGameWon()) {
+	if (game.isGameWon()) {
 	    updateEndGame("YOU WON", "?");
 	}
     }
@@ -134,24 +133,24 @@ public class MSController {
 
 	String text;
 
-	if (board.getSquares().get(id).getIsEditable()) {
-	    if (board.getSquares().get(id).getIsBomb()) {
+	if (game.getBoard().getSquares().get(id).getIsEditable()) {
+	    if (game.getBoard().getSquares().get(id).getIsBomb()) {
 		updateEndGame("YOU LOST", bomb);
 	    } else {
 
-		int numOfBombs = board.numberOfBombsNearby(posX, posY);
+		int numOfBombs = game.getBoard().numberOfBombsNearby(posX, posY);
 
 		if (numOfBombs == 0) {
 		    text = "";
 		    changeSquare(id, posX, posY, text, Color.WHITE);
-		    board.getSquares().get(id).setIsEditable();
+		    game.getBoard().getSquares().get(id).setIsEditable();
 		    disableButton(id, false);
-		    openNearbySquares(id, posX, posY);
+		    game.openNearbySquares(id, posX, posY);
 		} else {
 		    text = Integer.toString(numOfBombs);
 		    Color color = getColor(numOfBombs);
 		    changeSquare(id, posX, posY, text, color);
-		    board.getSquares().get(id).setIsEditable();
+		    game.getBoard().getSquares().get(id).setIsEditable();
 		    disableButton(id, false);
 		}
 	    }
@@ -173,19 +172,6 @@ public class MSController {
 	}
     }
 
-    private void openNearbySquares(int id, int posX, int posY) {
-	for (int x = -1; x < 2; x++) {
-	    for (int y = -1; y < 2; y++) {
-		int nX = posX + x;
-		int nY = posY + y;
-		if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0) && !(posX == nX && posY == nY)
-			&& !(board.getSquares().get((10 * nY) + nX).getIsBomb())) {
-		    checkSquare((10 * nY) + nX, nX, nY);
-		}
-	    }
-	}
-    }
-
     private Color getColor(int num) {
 	Color color;
 	ArrayList<Color> colors = new ArrayList<Color>(Arrays.asList(Color.BLUE, Color.GREEN, Color.RED, Color.DARKBLUE,
@@ -195,8 +181,8 @@ public class MSController {
     }
 
     private void updateEndGame(String gameStatus, String squareText) {
-	board.getSquares().stream().forEach(sq -> {
-	    int id = board.getSquares().indexOf(sq);
+	game.getBoard().getSquares().stream().forEach(sq -> {
+	    int id = game.getBoard().getSquares().indexOf(sq);
 	    int posX = id % 10;
 	    int posY = id / 10;
 	    if (sq.getIsBomb()) {
@@ -213,30 +199,9 @@ public class MSController {
 	updateStatusField(gameStatus);
     }
 
-    private boolean isGameWon() {
-	this.isGameWon = true;
-	board.getSquares().stream().forEach(sq -> {
-	    if (!((sq.getIsBomb() && sq.getIsFlagged()) || (!sq.getIsBomb() && !sq.getIsEditable()))) {
-		isGameWon = false;
-	    }
-	});
-
-	return isGameWon;
-    }
-
-    private int checkRemainingBombs() {
-	numberOfRemainingBombs = board.getTotalBombs();
-	board.getSquares().stream().forEach(sq -> {
-	    if (sq.getIsFlagged()) {
-		numberOfRemainingBombs--;
-	    }
-	});
-	return numberOfRemainingBombs;
-    }
-
     @FXML
     public void handleSaveButton() {
-	fileWriter.saveToFile(filename, board);
+	fileWriter.saveToFile(filename, game.getBoard());
     }
 
     @FXML
@@ -247,8 +212,8 @@ public class MSController {
 
     private void updateLoadedGame() {
 	msgrid.getChildren().clear();
-	board.getSquares().stream().forEach(sq -> {
-	    int id = board.getSquares().indexOf(sq);
+	game.getBoard().getSquares().stream().forEach(sq -> {
+	    int id = game.getBoard().getSquares().indexOf(sq);
 	    int posX = id % 10;
 	    int posY = id / 10;
 	    if (sq.getIsEditable()) {
@@ -264,10 +229,10 @@ public class MSController {
 		    } else {
 			createButton(id, posX, posY, "");
 			disableButton(id, false);
-			if (board.numberOfBombsNearby(posX, posY) == 0) {
+			if (game.getBoard().numberOfBombsNearby(posX, posY) == 0) {
 			    changeSquare(id, posX, posY, "", Color.WHITE);
 			} else {
-			    int numOfBombs = board.numberOfBombsNearby(posX, posY);
+			    int numOfBombs = game.getBoard().numberOfBombsNearby(posX, posY);
 			    changeSquare(id, posX, posY, Integer.toString(numOfBombs), getColor(numOfBombs));
 			}
 
