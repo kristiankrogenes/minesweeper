@@ -1,8 +1,5 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -134,38 +131,16 @@ public class MSController {
 
 				if (numOfBombs == 0) {
 					createLabel(id, posX, posY, "", Color.WHITE);
-					game.openNearbySquares(id, posX, posY);
+					game.getBoard().getSquares().get(id).setIsEditable();
+					disableButton(id, false);
+					openNearbySquares(id, posX, posY);
 				} else {
-					createLabel(id, posX, posY, Integer.toString(numOfBombs), getColor(numOfBombs));
+					createLabel(id, posX, posY, Integer.toString(numOfBombs), game.getColor(numOfBombs));
+					game.getBoard().getSquares().get(id).setIsEditable();
+					disableButton(id, false);
 				}
-				game.getBoard().getSquares().get(id).setIsEditable();
-				disableButton(id, false);
 			}
 		}
-			
-
-//		if (game.getBoard().getSquares().get(id).getIsEditable()) {
-//			if (game.getBoard().getSquares().get(id).getIsBomb()) {
-//				updateEndGame("YOU LOST", bomb);
-//			} else {
-//
-//				int numOfBombs = game.getBoard().numberOfBombsNearby(posX, posY);
-//
-//				if (numOfBombs == 0) {
-//					text = "";
-//					changeSquare(id, posX, posY, text, Color.WHITE);
-//					game.getBoard().getSquares().get(id).setIsEditable();
-//					disableButton(id, false);
-//					game.openNearbySquares(id, posX, posY);
-//				} else {
-//					text = Integer.toString(numOfBombs);
-//					Color color = getColor(numOfBombs);
-//					changeSquare(id, posX, posY, text, color);
-//					game.getBoard().getSquares().get(id).setIsEditable();
-//					disableButton(id, false);
-//				}
-//			}
-//		}
 	}
 	
 	private void handleSecondaryClick(Node source, int id) {
@@ -193,14 +168,20 @@ public class MSController {
 			}
 		}
 	}
-
-	private Color getColor(int num) {
-		Color color;
-		ArrayList<Color> colors = new ArrayList<Color>(Arrays.asList(Color.BLUE, Color.GREEN, Color.RED, Color.DARKBLUE,
-				Color.DARKRED, Color.CYAN, Color.YELLOW, Color.BLACK));
-		color = colors.get(num - 1);
-		return color;
+	
+	public void openNearbySquares(int id, int posX, int posY) {
+		for (int x = -1; x < 2; x++) {
+			for (int y = -1; y < 2; y++) {
+				int nX = posX + x;
+				int nY = posY + y;
+				if (game.isNearbySquareEmpty(posX, posY, nX, nY)) {
+					handlePrimaryClick((10 * nY) + nX, nX, nY);
+				}
+			}
+		}
 	}
+
+	
 	
 	// Rendrer brettet visuelt ved end game. Åpner alle bombene. 
 	private void updateEndGame(String gameStatus, String squareText) {
@@ -256,7 +237,7 @@ public class MSController {
 							createLabel(id, posX, posY, "", Color.WHITE);
 						} else {
 							int numOfBombs = game.numberOfBombsNearby(posX, posY);
-							createLabel(id, posX, posY, Integer.toString(numOfBombs), getColor(numOfBombs));
+							createLabel(id, posX, posY, Integer.toString(numOfBombs), game.getColor(numOfBombs));
 						}
 
 					}

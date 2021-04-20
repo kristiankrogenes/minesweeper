@@ -1,5 +1,10 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javafx.scene.paint.Color;
+
 public class Game {
 
 	private Board board;
@@ -39,8 +44,8 @@ public class Game {
 				int nX = posX + x;
 				int nY = posY + y;
 
-				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0)) {
-					if (board.getSquares().get((10 * nY) + nX).getIsBomb()) {
+				if (isSquareInBoard(nX, nY)) {
+					if (isSquareBomb((10 * nY) + nX)) {
 						bombCount++;
 					}
 				}
@@ -59,24 +64,6 @@ public class Game {
 		});
 		return numberOfRemainingBombs;
 	}
-
-	public void openNearbySquares(int id, int posX, int posY) {
-		for (int x = -1; x < 2; x++) {
-			for (int y = -1; y < 2; y++) {
-				int nX = posX + x;
-				int nY = posY + y;
-				if ((nX < 10 && nX >= 0) && (nY < 10 && nY >= 0) && !(posX == nX && posY == nY)
-						&& !(this.getBoard().getSquares().get((10 * nY) + nX).getIsBomb())) {
-					//checkSquare((10 * nY) + nX, nX, nY);
-					checkSquare((10 * nY) + nX);
-				}
-			}
-		}
-	}
-	
-	private int checkSquare(int id) {
-		return id;
-	}
 	
 	public boolean isSquareEditable(int id) {
 		return board.getSquares().get(id).getIsEditable();
@@ -84,5 +71,21 @@ public class Game {
 	 
 	public boolean isSquareBomb(int id) {
 		return board.getSquares().get(id).getIsBomb();
+	}
+	
+	public boolean isSquareInBoard(int posX, int posY) {
+		return ((posX < 10 && posX >= 0) && (posY < 10 && posY >= 0));
+	}
+	
+	public boolean isNearbySquareEmpty(int posX, int posY, int nX, int nY) {
+		return (isSquareInBoard(nX, nY) && !(posX == nX && posY == nY) && !(isSquareBomb((10 * nY) + nX)));
+	}
+	
+	public Color getColor(int num) {
+		Color color;
+		ArrayList<Color> colors = new ArrayList<Color>(Arrays.asList(Color.BLUE, Color.GREEN, Color.RED, Color.DARKBLUE,
+				Color.DARKRED, Color.CYAN, Color.YELLOW, Color.BLACK));
+		color = colors.get(num - 1);
+		return color;
 	}
 }
