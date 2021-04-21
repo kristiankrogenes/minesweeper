@@ -43,7 +43,9 @@ public class Square {
 	}
 
 	public void setNearbyBombs(int nearbyBombs) {
+	    if(nearbyBombs >= 0) {
 		this.nearbyBombs = nearbyBombs;
+	    }
 	}
 
 	public void setIsEditable() {

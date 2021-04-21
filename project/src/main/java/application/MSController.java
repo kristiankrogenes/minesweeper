@@ -52,14 +52,15 @@ public class MSController {
 			game = new Game();
 		}
 		msgrid.getChildren().clear();
+		game.updateRemainingBombs();
 		addButtons();
-		updateRemainingBombs();
+		updateBombCountField();
 		updateStatusField("");
 		updateGame();
 	}
 
-	private void updateRemainingBombs() {
-		bombCountField.setText("REMAINING BOMBS:	" + Integer.toString(game.getNearbyBombs()));
+	private void updateBombCountField() {
+		bombCountField.setText("REMAINING BOMBS:	" + Integer.toString(game.getRemainingBombs()));
 	}
 
 	private void updateStatusField(String text) {
@@ -99,32 +100,26 @@ public class MSController {
 		label.setTextFill(color);
 		msgrid.add(label, posX, posY);
 	}
-	
+
 	@FXML
 	public void handleClick(MouseEvent e) {
 		Node source = (Node) e.getSource();
 		int squareId = Integer.parseInt(source.getId());
-		int posX = GridPane.getColumnIndex(source);
-		int posY = GridPane.getRowIndex(source);
-
 		if (e.getButton() == MouseButton.PRIMARY) {
-			// handlePrimaryClick(squareId, posX, posY);
 			game.openSquare(squareId);
 		} else if (e.getButton() == MouseButton.SECONDARY) {
-			// handleSecondaryClick(source, squareId);
 			game.flagSquare(squareId);
-			
 		}
 		updateGame();
 	}
-	
+
 	private void updateGame() {
 		msgrid.getChildren().clear();
 		game.getBoard().getSquares().stream().forEach(sq -> {
 			int id = game.getBoard().getSquares().indexOf(sq);
 			int posX = id % 10;
 			int posY = id / 10;
-			
+
 			if (sq.getIsEditable()) {
 				createButton(id, posX, posY, "");
 			} else {
@@ -149,49 +144,17 @@ public class MSController {
 			}
 		});
 		checkGameStatus();
+		updateBombCountField();
+
 	}
-	
+
 	private void checkGameStatus() {
 		if (game.isGameWon()) {
 			updateEndGame("YOU WON", flagString);
-		} 
-		else if (game.getIsGameLost()) {
+		} else if (game.getIsGameLost()) {
 			updateEndGame("YOU LOST", bombString);
 		}
 	}
-
-//	private void handlePrimaryClick(int id, int posX, int posY) {
-//		if (game.isSquareEditable(id)) {
-//			if (game.isSquareBomb(id)) {
-//				updateEndGame("YOU LOST", bombString);
-//			} else {
-//
-//				int numOfBombs = game.numberOfBombsNearby(posX, posY);
-//
-//				if (numOfBombs == 0) {
-//					createLabel(id, posX, posY, "", Color.WHITE);
-//					game.setSquareEditable(id);
-//					disableButton(id, false);
-//					openNearbySquares(id, posX, posY);
-//				} else {
-//					createLabel(id, posX, posY, Integer.toString(numOfBombs), game.getColor(numOfBombs));
-//					game.setSquareEditable(id);
-//					disableButton(id, false);
-//				}
-//			}
-//		}
-//	}
-
-//	private void handleSecondaryClick(Node source, int id) {
-//		if (game.isSquareEditable(id)) {
-//			((Button) source).setText(flagString);
-//		} else {
-//			((Button) source).setText("");
-//		}
-//		game.setSquareEditable(id);
-//		game.getBoard().getSquares().get(id).setIsFlagged();
-//		updateRemainingBombs();
-//	}
 
 	private void disableButton(int id, boolean buttonVisible) {
 		for (Node node : msgrid.getChildren()) {
@@ -207,19 +170,6 @@ public class MSController {
 			}
 		}
 	}
-	
-
-//	public void openNearbySquares(int id, int posX, int posY) {
-//		for (int x = -1; x < 2; x++) {
-//			for (int y = -1; y < 2; y++) {
-//				int nX = posX + x;
-//				int nY = posY + y;
-//				if (game.isNearbySquareEmpty(posX, posY, nX, nY)) {
-//					handlePrimaryClick((10 * nY) + nX, nX, nY);
-//				}
-//			}
-//		}
-//	}
 
 	// Rendrer brettet visuelt ved end game. �pner alle bombene.
 	private void updateEndGame(String gameStatus, String squareText) {
@@ -242,16 +192,6 @@ public class MSController {
 	}
 
 	@FXML
-	public void handleSaveButton() {
-		boolean isGameSaved = fileWriter.saveToFile(filename, game.getBoard());
-		if (isGameSaved) {
-			updateStatusField("SUCCESSFULLY SAVED GAME");
-		} else {
-			updateStatusField("COULD NOT SAVE GAME");
-		}
-	}
-
-	@FXML
 	public void handleLoadButton() {
 		String str = fileWriter.loadFile(filename);
 		renderNewGame(true, str);
@@ -260,36 +200,14 @@ public class MSController {
 		updateStatusField("SUCCESSFULLY LOADED GAME");
 	}
 
-//	private void updateLoadedGame() {
-//		msgrid.getChildren().clear();
-//		game.getBoard().getSquares().stream().forEach(sq -> {
-//			int id = game.getBoard().getSquares().indexOf(sq);
-//			int posX = id % 10;
-//			int posY = id / 10;
-//			if (sq.getIsEditable()) {
-//				createButton(id, posX, posY, "");
-//			} else {
-//				if (sq.getIsFlagged()) {
-//					createButton(id, posX, posY, flagString);
-//				} else {
-//					if (sq.getIsBomb()) {
-//						createButton(id, posX, posY, "");
-//						disableButton(id, false);
-//						createLabel(id, posX, posY, bombString, Color.BLACK);
-//					} else {
-//						createButton(id, posX, posY, "");
-//						disableButton(id, false);
-//						if (game.numberOfBombsNearby(posX, posY) == 0) {
-//							createLabel(id, posX, posY, "", Color.WHITE);
-//						} else {
-//							int numOfBombs = game.numberOfBombsNearby(posX, posY);
-//							createLabel(id, posX, posY, Integer.toString(numOfBombs), game.getColor(numOfBombs));
-//						}
-//
-//					}
-//				}
-//			}
-//		});
-//	}
+	@FXML
+	public void handleSaveButton() {
+		boolean isGameSaved = fileWriter.saveToFile(filename, game.getBoard());
+		if (isGameSaved) {
+			updateStatusField("SUCSESSFULLY SAVED GAME");
+		} else {
+			updateStatusField("COULD NOT SAVE GAME");
+		}
+	}
 
 }
