@@ -7,19 +7,15 @@ import java.util.Scanner;
 
 public class FileWriter implements FileController {
 
-	public void saveToFile(String filename, Board board) {
+	public boolean saveToFile(String filename, Board board) {
+		
+		boolean saveStatus = true;
 
 		try {
 			File newfile = new File(filename);
 			PrintWriter writer = new PrintWriter(newfile);
 
 			board.getSquares().stream().forEach(sq -> {
-				/*
-				 * int isBomb = 0; int isEditable = 0; int isFlagged = 0;
-				 * 
-				 * if (sq.getIsBomb()) { isBomb = 1; } if (sq.getIsEditable()) { isEditable = 1;
-				 * } if (sq.getIsFlagged()) { isFlagged = 1; }
-				 */
 				String squaredata = sq.getIsBomb() + "-" + sq.getIsEditable() + "-" + sq.getIsFlagged() + ",";
 				writer.println(squaredata);
 			});
@@ -27,8 +23,10 @@ public class FileWriter implements FileController {
 
 		} catch (Exception e) {
 			System.out.println("FEIL");
+			saveStatus = false;
 		}
 		System.out.println("SAVED");
+		return saveStatus;
 	}
 
 	public String loadFile(String filename) {
