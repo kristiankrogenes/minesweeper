@@ -183,5 +183,4 @@ public class MineSweeperTest {
 	game.flagSquare(98);
 	assertTrue(game.isGameWon());
     }
-
 }

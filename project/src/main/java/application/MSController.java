@@ -211,7 +211,6 @@ public class MSController {
     public void handleLoadButton() {
 	String str = fileWriter.loadFile(filename);
 	renderNewGame(true, str);
-	// updateLoadedGame();
 	updateGame();
 	updateStatusField("SUCCESSFULLY LOADED GAME");
     }
