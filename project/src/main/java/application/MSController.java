@@ -245,18 +245,19 @@ public class MSController {
 	public void handleSaveButton() {
 		boolean isGameSaved = fileWriter.saveToFile(filename, game.getBoard());
 		if (isGameSaved) {
-			updateStatusField("SUCSESSFULLY SAVED GAME");
+			updateStatusField("SUCCESSFULLY SAVED GAME");
 		} else {
 			updateStatusField("COULD NOT SAVE GAME");
 		}
-		
 	}
 
 	@FXML
 	public void handleLoadButton() {
-		renderNewGame(true, fileWriter.loadFile(filename));
+		String str = fileWriter.loadFile(filename);
+		renderNewGame(true, str);
 		// updateLoadedGame();
 		updateGame();
+		updateStatusField("SUCCESSFULLY LOADED GAME");
 	}
 
 //	private void updateLoadedGame() {

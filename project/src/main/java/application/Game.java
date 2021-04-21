@@ -42,6 +42,7 @@ public class Game {
 					setSquareEditable(id);
 					setNearbyBombs(id, numOfBombs);
 					// disableButton(id, false);
+					
 				}
 			}
 		}

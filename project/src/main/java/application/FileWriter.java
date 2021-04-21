@@ -22,10 +22,8 @@ public class FileWriter implements FileController {
 			writer.close();
 
 		} catch (Exception e) {
-			System.out.println("FEIL");
 			saveStatus = false;
 		}
-		System.out.println("SAVED");
 		return saveStatus;
 	}
 
