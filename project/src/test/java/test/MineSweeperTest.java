@@ -129,9 +129,59 @@ public class MineSweeperTest {
 	game.openSquare(0);
     }
 
+    // Åpner alle nødvendige felter og flagger alle bombene og tester om man vinner
     @Test
     public void testIsGameWon() {
+	game.openSquare(4);
+	game.openSquare(9);
+	game.openSquare(59);
+	game.openSquare(70);
+	game.openSquare(83);
 	game.openSquare(0);
+	game.openSquare(10);
+	game.openSquare(12);
+	game.openSquare(17);
+	game.openSquare(21);
+	game.openSquare(22);
+	game.openSquare(31);
+	game.openSquare(32);
+	game.openSquare(37);
+	game.openSquare(39);
+	game.openSquare(40);
+	game.openSquare(41);
+	game.openSquare(42);
+	game.openSquare(43);
+	game.openSquare(47);
+	game.openSquare(51);
+	game.openSquare(52);
+	game.openSquare(53);
+	game.openSquare(67);
+	game.openSquare(77);
+	game.openSquare(86);
+	game.openSquare(87);
+	game.openSquare(89);
+	game.openSquare(90);
+	game.openSquare(95);
+	game.openSquare(96);
+	game.openSquare(97);
+	game.openSquare(99);
+	game.flagSquare(1);
+	game.flagSquare(2);
+	game.flagSquare(7);
+	game.flagSquare(11);
+	game.flagSquare(20);
+	game.flagSquare(27);
+	game.flagSquare(30);
+	game.flagSquare(33);
+	game.flagSquare(38);
+	game.flagSquare(50);
+	game.flagSquare(57);
+	game.flagSquare(63);
+	game.flagSquare(85);
+	game.flagSquare(88);
+	game.flagSquare(91);
+	game.flagSquare(98);
+	assertTrue(game.isGameWon());
     }
 
 }
